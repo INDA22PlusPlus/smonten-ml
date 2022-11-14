@@ -1,87 +1,63 @@
-use std::vec;
+// IMPORT MODULES
+mod layer;
+mod nn;
+use nn::NN;
+/////////////////
 
-use activation_functions::f32::sigmoid;
-use rand::Rng;
+
+use mnist::*;
+use ndarray::prelude::*;
+
+
+
+
 
 fn main() {
+
+    // let Mnist {
+    //     trn_img,
+    //     trn_lbl,
+    //     tst_img,
+    //     tst_lbl,
+    //     ..
+    // } = MnistBuilder::new()
+    //     .label_format_digit()
+    //     .training_set_length(50_000)
+    //     .validation_set_length(10_000)
+    //     .test_set_length(10_000)
+    //     .base_path("/Users/seb/Documents/KTH/03/INDA/repos/smonten-ml/ml/src/data_sets/mnist")
+    //     .finalize();
+ 
+    // let image_num = 0;
+    // // Can use an Array2 or Array3 here (Array3 for visualization)
+    // let train_data = Array3::from_shape_vec((50_000, 28, 28), trn_img)
+    //     .expect("Error converting images to Array3 struct")
+    //     .map(|x| *x as f32 / 256.0);
+    // println!("{:#.1?}\n",train_data.slice(s![image_num, .., ..]));
+ 
+    // // Convert the returned Mnist struct to Array2 format
+    // let train_labels: Array2<f32> = Array2::from_shape_vec((50_000, 1), trn_lbl)
+    //     .expect("Error converting training labels to Array2 struct")
+    //     .map(|x| *x as f32);
+    // println!("The first digit is a {:?}",train_labels.slice(s![image_num, ..]) );
+ 
+    // let _test_data = Array3::from_shape_vec((10_000, 28, 28), tst_img)
+    //     .expect("Error converting images to Array3 struct")
+    //     .map(|x| *x as f32 / 256.);
+ 
+    // let _test_labels: Array2<f32> = Array2::from_shape_vec((10_000, 1), tst_lbl)
+    //     .expect("Error converting testing labels to Array2 struct")
+    //     .map(|x| *x as f32);
+
+
+
     println!("Hello, world!");
-    let nn = NN::new(vec![2, 2]);
-    dbg!(&nn);
+    // let nn = NN::new(vec![4, 10, 4]);
 
-    let input = vec![0.2, 0.3];
-    dbg!("{}", &nn.calc(input));
-}
-
-#[derive(Debug, Clone)]
-struct NN {
-    layers: Vec<Layer>
-}
-impl NN {
-    fn new(layer_sizes: Vec<usize>) -> NN {
-        let mut layers: Vec<Layer> = vec![];
-
-        for i in 1..layer_sizes.len() {
-            layers.push(
-                Layer::new(
-                    layer_sizes[i-1],
-                    layer_sizes[i]
-                )
-            );
-        }
-
-        NN { layers: layers }
-    }
-
-    fn calc(&self, input: Vec<f32>) -> Vec<f32> {
-        let mut a = input;
-        for layer in &self.layers {
-            a = layer.a(a);
-        }
-        a
-    }
-}
+    // let input = vec![1.0, 0.0, 0.0, 0.0];
+    // let output = nn.calc(input);
+    // let correct = vec![1.0, 0.0, 0.0, 0.0];
 
 
-#[derive(Debug, Clone)]
-struct Layer {
-    size: usize,
-    w: Vec<Vec<f32>>,
-    b: Vec<f32>
-}
-impl Layer {
-    fn new(nodes_in_prev_layer: usize, nodes_in_this_layer: usize) -> Layer {
-        let mut rng = rand::thread_rng();
 
-        Layer {
-            size: nodes_in_this_layer,
-            w: vec![
-                vec![
-                    rng.gen_range(0.0..10.0);
-                    nodes_in_prev_layer
-                ];
-                nodes_in_this_layer
-            ],
-            b: vec![
-                sigmoid(rand::thread_rng().gen_range(-1..1) as f32);
-                nodes_in_this_layer
-            ]
-        }
-    }
-
-    fn a(&self, prev_layer_a: Vec<f32>) -> Vec<f32> {
-        let mut a: Vec<f32> = vec![0.0; self.size];
-        for i in 0..self.size {
-            let cur_w = &self.w[i];
-            let cur_b      = &self.b[i];
-
-            let mut sum: f32 = 0.0;
-            for j in 0..prev_layer_a.len() {
-                sum += &cur_w[j] * &prev_layer_a[j];
-            }
-
-            a[i] = sigmoid(sum + cur_b);
-        }
-
-        a
-    }
 }
